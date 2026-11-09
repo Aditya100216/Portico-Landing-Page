@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Portico | Unified Money Market</title>
+<style>
+:root{--bg:#f7f9fc;--surface:#fff;--ink:#0b1b3a;--muted:#5b6b88;--line:#e3e9f3;--blue:#1d4ed8;--blue-d:#1e40af;--blue-l:#eaf0ff;--caution:#d97706;--danger:#dc2626;--green:#0f8a5f;box-sizing:border-box;color-scheme:light}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0a1226;--surface:#101b36;--ink:#e8eefc;--muted:#93a3c4;--line:#1f2d4d;--blue:#5b8cff;--blue-d:#82a6ff;--blue-l:#14234a;--caution:#f59e0b;--danger:#f87171;--green:#34d399;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0a1226;--surface:#101b36;--ink:#e8eefc;--muted:#93a3c4;--line:#1f2d4d;--blue:#5b8cff;--blue-d:#82a6ff;--blue-l:#14234a;--caution:#f59e0b;--danger:#f87171;--green:#34d399;color-scheme:dark}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+h1,h2,h3{margin:0;letter-spacing:-.02em;line-height:1.15}
+h1{font-size:clamp(1.8rem,4vw,2.6rem)}h2{font-size:1.2rem;margin-bottom:.5rem}
+.muted{color:var(--muted);font-size:.9rem}
+.app{display:grid;grid-template-columns:240px 1fr;min-height:100%}
+.side{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;gap:.25rem;padding:1.25rem .9rem;padding-top:calc(1.25rem + env(safe-area-inset-top,0px));background:var(--surface);border-right:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:.6rem;font-weight:700;font-size:1.2rem;padding:0 .6rem 1.25rem}
+.mark{width:22px;height:22px;border-radius:6px;background:linear-gradient(135deg,var(--blue),#60a5fa);clip-path:polygon(0 100%,0 40%,50% 0,100% 40%,100% 100%,75% 100%,75% 55%,25% 55%,25% 100%)}
+.nav{display:flex;flex-direction:column;gap:.15rem}
+.nav a{display:flex;align-items:center;gap:.7rem;padding:.6rem .7rem;border-radius:10px;color:var(--muted);text-decoration:none;font-weight:500}
+.nav a svg{width:18px;height:18px;flex:none;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.nav a:hover{background:var(--blue-l);color:var(--ink)}
+.nav a.on{background:var(--blue-l);color:var(--blue);font-weight:600}
+.sidefoot{margin-top:auto;display:grid;gap:.6rem}
+.net{font-size:.85rem;color:var(--muted);padding:0 .3rem;display:flex;align-items:center;gap:.5rem}
+.net i{width:8px;height:8px;border-radius:50%;background:var(--green)}
+.main{padding:2rem clamp(1rem,3vw,2.5rem) calc(2.5rem + env(safe-area-inset-bottom,0px));padding-top:calc(2rem + env(safe-area-inset-top,0px));max-width:1080px;width:100%}
+.page{display:grid;gap:1.25rem}
+.lead{color:var(--muted);max-width:56ch;margin:.5rem 0 0}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:1rem 1.1rem}
+.stat b{display:block;font-size:1.4rem;letter-spacing:-.02em}.stat span{color:var(--muted);font-size:.85rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:1.4rem;box-shadow:0 1px 2px rgba(11,27,58,.04),0 8px 24px -12px rgba(11,27,58,.12)}
+.two{display:grid;grid-template-columns:1fr 270px;gap:2rem;align-items:center}
+dl{display:grid;grid-template-columns:1fr 1fr;gap:1rem 2rem;margin:1rem 0 0}
+dt{color:var(--muted);font-size:.85rem}dd{margin:0;font-size:1.2rem;font-weight:600}
+.gauge{position:relative;text-align:center}.gauge svg{width:100%;display:block}
+.gauge path{fill:none;stroke-width:14;stroke-linecap:round}
+.track{stroke:var(--line)}.fill{transition:stroke-dashoffset .35s ease,stroke .35s;stroke:var(--blue)}
+.caution .fill{stroke:var(--caution)}.danger .fill{stroke:var(--danger)}
+.gread{position:absolute;inset:auto 0 4px 0;display:flex;flex-direction:column}
+.gnum{font-size:2.3rem;font-weight:700;letter-spacing:-.03em;line-height:1}.glab{font-size:.85rem;color:var(--muted)}
+.scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:640px}
+th{font-weight:500;color:var(--muted);font-size:.85rem;text-align:left;padding:.5rem .75rem;border-bottom:1px solid var(--line)}
+td{padding:.9rem .75rem;border-bottom:1px solid var(--line)}tr:last-child td{border-bottom:0}
+.pos{color:var(--green);font-weight:600}
+.bar{height:6px;background:var(--line);border-radius:3px;min-width:80px}.bar i{display:block;height:100%;background:var(--blue);border-radius:3px}
+.acts{display:flex;gap:.5rem;justify-content:flex-end}
+.btn{font:inherit;font-weight:600;padding:.6rem 1rem;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.btn:hover{background:var(--blue-l)}.btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}.btn.primary:hover{background:var(--blue-d)}
+.btn.sm{padding:.4rem .8rem;font-size:.9rem}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1rem}
+.asset h3{display:flex;justify-content:space-between;align-items:baseline}
+.asset .big{font-size:1.5rem;font-weight:700;margin:.6rem 0 .2rem}
+.asset .row{margin-top:1rem}
+.slider{display:block;margin:1.2rem 0}.slider span{display:flex;justify-content:space-between;font-weight:500;margin-bottom:.4rem}
+input[type=range]{width:100%;accent-color:var(--blue)}
+.row{display:flex;gap:.75rem;align-items:center;flex-wrap:wrap}.end{justify-content:flex-end;margin-top:1.25rem}
+.list{display:grid}.item{display:flex;justify-content:space-between;gap:1rem;padding:.85rem 0;border-bottom:1px solid var(--line)}.item:last-child{border:0}
+details{border-bottom:1px solid var(--line);padding:.9rem 0}details:last-child{border:0}
+summary{cursor:pointer;font-weight:600}details p{margin:.6rem 0 0;color:var(--muted);max-width:62ch}
+.scrim{position:fixed;inset:0;background:rgba(11,27,58,.45);display:grid;place-items:center;padding:1rem;z-index:20}.scrim[hidden]{display:none}
+.panel{background:var(--surface);border-radius:16px;padding:1.5rem;width:min(420px,100%);animation:rise .18s ease}
+@keyframes rise{from{transform:translateY(8px);opacity:0}}
+.field input{width:100%;font:inherit;font-size:1.25rem;padding:.7rem .9rem;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);margin-top:.4rem}
+.err{color:var(--danger);font-size:.9rem;margin:.75rem 0 0}
+.note{font-size:.85rem;color:var(--muted);margin-top:1rem}
+@media(max-width:860px){
+ .app{grid-template-columns:1fr}
+ .side{position:sticky;top:0;height:auto;flex-direction:row;align-items:center;gap:.5rem;padding:.6rem .8rem;padding-top:calc(.6rem + env(safe-area-inset-top,0px));overflow-x:auto;border-right:0;border-bottom:1px solid var(--line);z-index:5}
+ .brand{padding:0 .5rem 0 0}.nav{flex-direction:row}.nav a{white-space:nowrap;padding:.5rem .65rem}.sidefoot{margin:0 0 0 auto;display:flex}.net{display:none}
+ .two{grid-template-columns:1fr}.gauge{max-width:270px;margin:0 auto}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="side">
+    <div class="brand"><span class="mark"></span>Portico</div>
+    <nav class="nav" id="nav" aria-label="Primary"></nav>
+    <div class="sidefoot">
+      <div class="net"><i></i>Elysium network</div>
+      <button class="btn primary" id="wallet">Connect wallet</button>
+    </div>
+  </aside>
+  <main class="main" id="view"></main>
+</div>
+
+<div class="scrim" id="scrim" hidden>
+  <div class="panel" role="dialog" aria-modal="true">
+    <h3 id="ptitle"></h3><p class="muted" id="psub"></p>
+    <label class="field" style="display:block;margin-top:1.25rem"><span style="font-weight:500">Amount</span><input id="amt" inputmode="decimal" placeholder="0.00"></label>
+    <p class="err" id="perr"></p>
+    <div class="row end"><button class="btn" id="cancel">Cancel</button><button class="btn primary" id="ok"></button></div>
+  </div>
+</div>
+
+<script>
+const M=[
+ {s:'HYPE',n:'Hyperliquid',p:38,sa:3.4,ba:5.9,lt:.70,v:true,tvl:48.2,util:44},
+ {s:'kHYPE',n:'Staked HYPE',p:40,sa:4.1,ba:6.8,lt:.65,v:true,tvl:21.7,util:38},
+ {s:'USDC',n:'USD Coin',p:1,sa:7.2,ba:9.4,lt:.80,v:false,tvl:63.9,util:52}];
+const pos={sup:{HYPE:1200,kHYPE:300,USDC:2000},bor:{HYPE:0,kHYPE:0,USDC:20000}};
+const log=[{t:'Supplied',s:'HYPE',n:1200,d:'3 days ago'},{t:'Supplied',s:'kHYPE',n:300,d:'3 days ago'},{t:'Borrowed',s:'USDC',n:20000,d:'2 days ago'}];
+let connected=false,act=null,sd=0,sx=0;
+const $=id=>document.getElementById(id);
+const usd=n=>n.toLocaleString('en-US',{style:'currency',currency:'USD',maximumFractionDigits:0});
+const ic={overview:'<path d="M3 11l9-8 9 8M5 10v10h14V10"/>',markets:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',supply:'<path d="M12 19V5M5 12l7-7 7 7"/>',borrow:'<path d="M12 5v14M5 12l7 7 7-7"/>',risk:'<path d="M12 3l9 16H3zM12 10v4M12 17h.01"/>',activity:'<path d="M3 12h4l3-8 4 16 3-8h4"/>',learn:'<path d="M4 5a2 2 0 012-2h13v16H6a2 2 0 00-2 2zM4 19a2 2 0 012-2h13"/>'};
+const pages={overview:'Overview',markets:'Markets',supply:'Supply',borrow:'Borrow',risk:'Risk simulator',activity:'Activity',learn:'Learn'};
+function risk(d=0,x=0){let vw=0,sw=0,c=0,debt=x,bv=0;
+ for(const m of M){const px=m.v?m.p*(1-d/100):m.p,v=(pos.sup[m.s]||0)*px;c+=v;
+  if(m.v){vw+=v*m.lt;bv+=(pos.sup[m.s]||0)*m.p*m.lt}else sw+=v*m.lt;debt+=(pos.bor[m.s]||0)*px}
+ return{hf:debt>0?(vw+sw)/debt:Infinity,c,debt,cap:Math.max(0,vw+sw-debt),liq:debt>0&&bv>0?Math.max(0,(1-(debt-sw)/bv)*100):null}}
+function gauge(hf){const L=Math.PI*90,v=hf===Infinity?3:Math.min(hf,3);
+ const t=hf<1.1?'danger':hf<1.5?'caution':'',lab=hf<1?'Liquidatable':hf<1.1?'Critical':hf<1.5?'Caution':'Healthy';
+ return`<div class="gauge ${t}"><svg viewBox="0 0 200 115" role="img" aria-label="Health factor"><path class="track" d="M10 105 A90 90 0 0 1 190 105"/><path class="fill" d="M10 105 A90 90 0 0 1 190 105" style="stroke-dasharray:${L};stroke-dashoffset:${L*(1-v/3)}"/></svg><div class="gread"><span class="gnum">${hf===Infinity?'∞':hf.toFixed(2)}</span><span class="glab">${lab}</span></div></div>`}
+const head=(t,s)=>`<div><h1>${t}</h1><p class="lead">${s}</p></div>`;
+const posCard=r=>`<section class="card two"><div><h2>Your position</h2><dl><div><dt>Collateral</dt><dd>${usd(r.c)}</dd></div><div><dt>Debt</dt><dd>${usd(r.debt)}</dd></div><div><dt>Available to borrow</dt><dd>${usd(r.cap)}</dd></div><div><dt>Liquidation if collateral falls</dt><dd>${r.liq==null?'n/a':r.liq.toFixed(1)+'%'}</dd></div></dl></div>${gauge(r.hf)}</section>`;
+const btns=m=>`<button class="btn primary sm" data-a="supply" data-s="${m.s}">Supply</button><button class="btn sm" data-a="borrow" data-s="${m.s}">Borrow</button>`;
+
+const V={
+overview(){const r=risk();return head('One pool. Borrow without selling.','Supply HYPE, kHYPE, or USDC to a shared pool, then borrow against it. See your liquidation risk before it matters.')+
+ `<div class="stats"><div class="stat"><b>$133.8M</b><span>Total supplied</span></div><div class="stat"><b>$61.6M</b><span>Total borrowed</span></div><div class="stat"><b>46%</b><span>Pool utilization</span></div><div class="stat"><b>${usd(r.cap)}</b><span>Your borrow capacity</span></div></div>`+posCard(r)+
+ `<section class="card"><h2>Top markets by supply APY</h2><div class="list">${[...M].sort((a,b)=>b.sa-a.sa).map(m=>`<div class="item"><span><b>${m.s}</b> <span class="muted">${m.n}</span></span><span class="pos">${m.sa}%</span></div>`).join('')}</div></section>`},
+markets(){return head('Markets','Live rates and utilization for every asset in the pool.')+`<section class="card"><div class="scroll"><table><thead><tr><th>Asset</th><th>Supplied</th><th>Utilization</th><th>Supply APY</th><th>Borrow APY</th><th>Max LTV</th><th></th></tr></thead><tbody>${M.map(m=>`<tr><td><b>${m.s}</b><div class="muted">${m.n}</div></td><td>$${m.tvl}M</td><td><div class="bar"><i style="width:${m.util}%"></i></div><span class="muted">${m.util}%</span></td><td class="pos">${m.sa}%</td><td>${m.ba}%</td><td>${m.lt*100}%</td><td class="acts">${btns(m)}</td></tr>`).join('')}</tbody></table></div></section>`},
+supply(){return head('Supply','Deposit assets to earn yield and use them as collateral.')+`<div class="grid3">${M.map(m=>`<section class="card asset"><h3>${m.s}<span class="pos">${m.sa}% APY</span></h3><div class="big">${(pos.sup[m.s]||0).toLocaleString()}</div><span class="muted">${usd((pos.sup[m.s]||0)*m.p)} supplied</span><div class="row"><button class="btn primary sm" data-a="supply" data-s="${m.s}">Supply</button><button class="btn sm" data-a="withdraw" data-s="${m.s}">Withdraw</button></div></section>`).join('')}</div>`},
+borrow(){const r=risk();return head('Borrow','Borrow against your collateral without selling it.')+`<div class="stats"><div class="stat"><b>${usd(r.debt)}</b><span>Current debt</span></div><div class="stat"><b>${usd(r.cap)}</b><span>Available to borrow</span></div><div class="stat"><b>${r.hf===Infinity?'∞':r.hf.toFixed(2)}</b><span>Health factor</span></div></div><div class="grid3">${M.map(m=>`<section class="card asset"><h3>${m.s}<span>${m.ba}% APY</span></h3><div class="big">${(pos.bor[m.s]||0).toLocaleString()}</div><span class="muted">${usd((pos.bor[m.s]||0)*m.p)} borrowed</span><div class="row"><button class="btn primary sm" data-a="borrow" data-s="${m.s}">Borrow</button><button class="btn sm" data-a="repay" data-s="${m.s}">Repay</button></div></section>`).join('')}</div>`},
+risk(){return head('Risk simulator','Test how price moves and new borrowing change your health factor. Nothing here touches your real position.')+`<section class="card two"><div><label class="slider"><span>HYPE and kHYPE price drop <b id="dv"></b></span><input type="range" id="drop" min="0" max="80" value="${sd}"></label><label class="slider"><span>Additional borrow <b id="ev"></b></span><input type="range" id="extra" min="0" max="30000" step="500" value="${sx}"></label><div class="row"><button class="btn sm" id="reset">Reset</button><span class="muted" id="simsum"></span></div></div><div id="g2"></div></section>`},
+activity(){return head('Activity','Every supply, borrow, and repayment on your account.')+`<section class="card"><div class="list">${log.map(l=>`<div class="item"><span><b>${l.t}</b> ${l.n.toLocaleString()} ${l.s}</span><span class="muted">${l.d}</span></div>`).join('')}</div><p class="note">Entries you create in this preview appear at the top.</p></section>`},
+learn(){return head('Learn','The basics, in plain language.')+`<section class="card"><details open><summary>What is a health factor?</summary><p>It compares the risk-adjusted value of your collateral to your debt. Above 1.5 is comfortable. Below 1.0, your position can be liquidated.</p></details><details><summary>What happens in a liquidation?</summary><p>A portion of your collateral is sold at a discount to repay part of your debt. You keep the rest, but you lose the discount.</p></details><details><summary>Why borrow instead of selling?</summary><p>Borrowing lets you keep your exposure to HYPE while accessing cash. You pay interest, and you carry liquidation risk if prices fall.</p></details><details><summary>What is kHYPE?</summary><p>A liquid staking token that represents staked HYPE. Its value grows as staking rewards accrue, and it can be used as collateral here.</p></details></section>`}};
+
+function route(){const k=(location.hash.slice(1)in pages)?location.hash.slice(1):'overview';
+ $('nav').innerHTML=Object.entries(pages).map(([id,l])=>`<a href="#${id}" class="${id===k?'on':''}" ${id===k?'aria-current="page"':''}><svg viewBox="0 0 24 24">${ic[id.replace('risk','risk')]}</svg>${l}</a>`).join('');
+ $('view').innerHTML=`<div class="page">${V[k]()}</div>`;
+ if(k==='risk'){$('drop').oninput=e=>{sd=+e.target.value;sim()};$('extra').oninput=e=>{sx=+e.target.value;sim()};$('reset').onclick=()=>{sd=sx=0;$('drop').value=0;$('extra').value=0;sim()};sim()}
+ window.scrollTo(0,0)}
+function sim(){const r=risk(sd,sx);$('dv').textContent=sd+'%';$('ev').textContent=usd(sx);$('simsum').textContent=`Collateral ${usd(r.c)} · Debt ${usd(r.debt)}`;$('g2').innerHTML=gauge(r.hf)}
+addEventListener('hashchange',route);
+
+const verb={supply:['Supply','Earn','sup',1],withdraw:['Withdraw','Take out','sup',-1],borrow:['Borrow','Pay','bor',1],repay:['Repay','Reduce debt on','bor',-1]};
+document.addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(!b)return;
+ const m=M.find(x=>x.s===b.dataset.s),v=verb[b.dataset.a];act={a:b.dataset.a,m};
+ $('ptitle').textContent=v[0]+' '+m.s;
+ $('psub').textContent=(b.dataset.a==='supply'?`Earn ${m.sa}% APY`:b.dataset.a==='borrow'?`Pay ${m.ba}% APY`:v[1]+' '+m.s)+' · Demo mode, no transaction is sent';
+ $('ok').textContent=v[0]+' '+m.s;$('amt').value='';$('perr').textContent='';$('scrim').hidden=false;$('amt').focus()});
+$('cancel').onclick=()=>$('scrim').hidden=true;
+$('scrim').onclick=e=>{if(e.target===$('scrim'))$('scrim').hidden=true};
+$('ok').onclick=()=>{const n=+$('amt').value,v=verb[act.a],k=v[2],cur=pos[k][act.m.s]||0;
+ if(!n||n<=0)return $('perr').textContent='Enter an amount greater than zero.';
+ if(!connected)return $('perr').textContent='Connect your wallet to continue.';
+ if(v[3]<0&&n>cur)return $('perr').textContent='Amount is higher than your current balance.';
+ pos[k][act.m.s]=cur+n*v[3];
+ if(act.a==='withdraw'||act.a==='borrow'){const r=risk();if(r.hf<1){pos[k][act.m.s]=cur;return $('perr').textContent='This would make your position liquidatable. Try a smaller amount.'}}
+ log.unshift({t:{supply:'Supplied',withdraw:'Withdrew',borrow:'Borrowed',repay:'Repaid'}[act.a],s:act.m.s,n,d:'Just now'});
+ $('scrim').hidden=true;route()};
+$('wallet').onclick=()=>{connected=!connected;$('wallet').textContent=connected?'0x7a3f…c92e':'Connect wallet';$('wallet').className='btn'+(connected?'':' primary')};
+route();
+</script>
+</body>
+</html>
